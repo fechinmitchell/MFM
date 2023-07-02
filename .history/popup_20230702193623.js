@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   generateBtn.addEventListener("click", async () => {
     try {
       loading.style.display = "block";
+      loadingBar.style.display = "block"; // Show the loading bar
       error.style.display = "none";
 
       const apiKey = apiKeyInput.value;
@@ -96,8 +97,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const generatedText = data['choices'][0]['message']['content'];
       coverLetter.value = generatedText;
 
+      // Animate the loading bar
+      let width = 1;
+      const animate = setInterval(() => {
+        if (width >= 100) {
+          clearInterval(animate);
+        } else {
+          width++;
+          progress.style.width = width + '%';
+        }
+      }, 100);
 
     } catch (e) {
+      clearInterval(animate); // Stop animating the loading bar if an error occurs
       console.error(e);
 
       if (e.message === "Invalid API key") {
@@ -110,6 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
       error.style.display = "block";
     } finally {
       loading.style.display = "none";
+      loadingBar.style.display = "none"; // Hide the loading bar
+      progress.style.width = '1%'; // Reset the loading bar
     }
   });
 });

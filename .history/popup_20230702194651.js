@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const coverLetter = document.getElementById("coverLetter");
   const loading = document.getElementById("loading");
   const error = document.getElementById("error");
-  const loadingBar = document.getElementById("loadingBar");
 
   // Load saved data from localStorage
   apiKeyInput.value = localStorage.getItem('apiKey') || '';
@@ -25,19 +24,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let response;
 
+  function sanitizeInput(input) {
+    // This is a very simple sanitization function that removes anything that isn't a letter, number, space, or common punctuation
+    // You may want to adjust this to suit your needs
+    return input.replace(/[^a-z0-9 ,.!?]/gi, '');
+  }
+
   generateBtn.addEventListener("click", async () => {
     try {
       loading.style.display = "block";
       error.style.display = "none";
 
-      const apiKey = apiKeyInput.value;
-      const name = nameInput.value;
-      const desiredRole = desiredRoleInput.value;
-      const yearsExperience = yearsExperienceInput.value;
-      const degree = degreeInput.value;
-      const email = emailInput.value;
-      const phoneNumber = phoneNumberInput.value;
-      const description = jobDescription.value;
+      const apiKey = sanitizeInput(apiKeyInput.value);
+      const name = sanitizeInput(nameInput.value);
+      const desiredRole = sanitizeInput(desiredRoleInput.value);
+      const yearsExperience = sanitizeInput(yearsExperienceInput.value);
+      const degree = sanitizeInput(degreeInput.value);
+      const email = sanitizeInput(emailInput.value);
+      const phoneNumber = sanitizeInput(phoneNumberInput.value);
+      const description = sanitizeInput(jobDescription.value);
 
       // Save data to localStorage
       localStorage.setItem('apiKey', apiKey);
@@ -63,53 +68,44 @@ document.addEventListener("DOMContentLoaded", () => {
           Degree: ${degree}
           Email: ${email}
           Phone Number: ${phoneNumber}
-
-          Job Description:
-          ${description}`
+          Job Description: ${description}`
         }
       ];
 
-      response = await fetch("https://api.openai.com/v1/chat/completions", {
+      const prompt = {
+        'messages': messages
+      };
+
+      const data = {
+        'apiKey': apiKey,
+        'prompt': JSON.stringify(prompt),
+        'maxTokens': 500,
+        'temperature': 0.5,
+        'topP': 1
+      };
+
+      response = await fetch("https://api.openai.com/v1/engines/davinci-codex/completions", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          'model': 'gpt-3.5-turbo',
-          'messages': messages,
-          'max_tokens': 500,
-          'n': 1,
-          'temperature': 0.5
-        })
+        body: JSON.stringify(data)
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Invalid API key");
-        } else {
-          throw new Error(`Error generating cover letter (status: ${response.status}, statusText: ${response.statusText})`);
-        }
-      }
-
-      const data = await response.json();
-      const generatedText = data['choices'][0]['message']['content'];
-      coverLetter.value = generatedText;
-
-
-    } catch (e) {
-      console.error(e);
-
-      if (e.message === "Invalid API key") {
-        error.innerText = "Error generating cover letter. Invalid API key. Please check your API key and try again.";
-      } else if (e.message === "Error generating cover letter") {
-        error.innerText = `Error generating cover letter (status: ${response && response.status}, statusText: ${response && response.statusText}). Please check your API key and try again.`;
+        throw new Error(`HTTP error! status: ${response.status}`);
       } else {
-        error.innerText = "An unexpected error occurred. Please try again.";
+        response = await response.json();
+        coverLetter.value = response.choices[0].message.content;
+        loading.style.display = "none";
       }
-      error.style.display = "block";
-    } finally {
+
+    } catch(e) {
       loading.style.display = "none";
+      error.style.display = "block";
+      error.textContent = e.message || 'An unexpected error occurred.';
     }
   });
 });
+
+

@@ -25,19 +25,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let response;
 
+  function sanitizeInput(input) {
+    // This is a very simple sanitization function that removes anything that isn't a letter, number, space, or common punctuation
+    // You may want to adjust this to suit your needs
+    return input.replace(/[^a-z0-9 ,.!?]/gi, '');
+  }
+
   generateBtn.addEventListener("click", async () => {
     try {
       loading.style.display = "block";
+      loadingBar.style.display = "block"; // Show the loading bar
       error.style.display = "none";
 
-      const apiKey = apiKeyInput.value;
-      const name = nameInput.value;
-      const desiredRole = desiredRoleInput.value;
-      const yearsExperience = yearsExperienceInput.value;
-      const degree = degreeInput.value;
-      const email = emailInput.value;
-      const phoneNumber = phoneNumberInput.value;
-      const description = jobDescription.value;
+      const apiKey = sanitizeInput(apiKeyInput.value);
+      const name = sanitizeInput(nameInput.value);
+      const desiredRole = sanitizeInput(desiredRoleInput.value);
+      const yearsExperience = sanitizeInput(yearsExperienceInput.value);
+      const degree = sanitizeInput(degreeInput.value);
+      const email = sanitizeInput(emailInput.value);
+      const phoneNumber = sanitizeInput(phoneNumberInput.value);
+      const description = sanitizeInput(jobDescription.value);
 
       // Save data to localStorage
       localStorage.setItem('apiKey', apiKey);
@@ -80,36 +87,29 @@ document.addEventListener("DOMContentLoaded", () => {
           'messages': messages,
           'max_tokens': 500,
           'n': 1,
-          'temperature': 0.5
-        })
+                   'temperature': 0.5
+        }),
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Invalid API key");
-        } else {
-          throw new Error(`Error generating cover letter (status: ${response.status}, statusText: ${response.statusText})`);
-        }
+        throw new Error('Network response was not ok');
       }
 
       const data = await response.json();
-      const generatedText = data['choices'][0]['message']['content'];
-      coverLetter.value = generatedText;
 
-
-    } catch (e) {
-      console.error(e);
-
-      if (e.message === "Invalid API key") {
-        error.innerText = "Error generating cover letter. Invalid API key. Please check your API key and try again.";
-      } else if (e.message === "Error generating cover letter") {
-        error.innerText = `Error generating cover letter (status: ${response && response.status}, statusText: ${response && response.statusText}). Please check your API key and try again.`;
+      if (data['choices'] && data['choices'].length > 0) {
+        const generatedCoverLetter = data['choices'][0]['message']['content'];
+        coverLetter.value = generatedCoverLetter;
       } else {
-        error.innerText = "An unexpected error occurred. Please try again.";
+        throw new Error('Unable to generate a cover letter. Please try again.');
       }
+    } catch (error) {
+      error.textContent = `An error occurred: ${error.message}`;
       error.style.display = "block";
     } finally {
       loading.style.display = "none";
+      loadingBar.style.display = "none"; // Hide the loading bar
     }
   });
 });
+

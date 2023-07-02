@@ -96,8 +96,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const generatedText = data['choices'][0]['message']['content'];
       coverLetter.value = generatedText;
 
+      // Animate the loading bar
+      let width = 1;
+      const animate = setInterval(() => {
+        if (width >= 100) {
+          clearInterval(animate);
+        } else {
+          width++;
+          progress.style.width = width + '%';
+        }
+      }, 100);
 
     } catch (e) {
+      clearInterval(animate); // Stop animating the loading bar if an error occurs
       console.error(e);
 
       if (e.message === "Invalid API key") {
