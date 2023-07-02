@@ -65,6 +65,19 @@
     button:hover {
       background-color: #0056b3;
     }
+
+    #loadingBar {
+        width: 100%;
+        background-color: #f3f3f3;
+        border-radius: 20px;
+        padding: 3px;
+      }
+      #progress {
+        width: 1%;
+        height: 20px;
+        background-color: #4CAF50;
+        border-radius: 20px;
+      }
   </style>
 </head>
 <body>
@@ -95,28 +108,29 @@
     </div>
     <div>
       <label for="jobDescription">Job Description:</label>
-      <textarea id="jobDescription" rows="4" cols="50" placeholder="Paste job description here"></textarea>
+      <textarea id="jobDescription" rows="4" cols="50" placeholder="Enter the Job Description"></textarea>
     </div>
   </div>
-  
+
   <button id="generateBtn">Generate Cover Letter</button>
 
-  <div id="loading" style="display:none;">
-    <div>Loading...</div>
-    <progress id="progress" max="100"></progress>
-  </div>
-  <div id="error" style="display:none;">
-    <div>Error generating cover letter. Please try again.</div>
-  </div>
+  <div id="loadingBar" style="display: none;">
+      <div id="progress"></div>
+    </div>
 
-  <h2>Cover Letter</h2>
-  <textarea id="coverLetter" rows="10" cols="50" style="width: 100%;"></textarea>
-  <button id="downloadBtn" style="display: none;">Download as PDF</button>
+  <label for="coverLetter">Cover Letter:</label>
+  <textarea id="coverLetter" rows="10" cols="50"></textarea>
+
+  <div id="loading" style="display: none;">
+    <p>Loading...</p>
+  </div>
+  
+  <div id="error" style="display: none; color: red;"></div>
 
   <script src="popup.js"></script>
-  <script src="jspdf.min.js"></script>
 </body>
 </html>
+
 
 
 
