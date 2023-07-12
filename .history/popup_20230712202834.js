@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.storage.sync.get('blockerState', function(data) {
       if (data.blockerState === 'on') {
         toggleButton.classList.add('on-button');
-        toggleButton.textContent = 'Social Media Block is ON';
+        toggleButton.textContent = 'ON';
       } else {
         toggleButton.classList.add('off-button');
-        toggleButton.textContent = 'Social Media Block is OFF';
+        toggleButton.textContent = 'OFF';
       }
     });
   
@@ -23,11 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
           if (newState === 'on') {
             toggleButton.classList.remove('off-button');
             toggleButton.classList.add('on-button');
-            toggleButton.textContent = 'Social Media Block is ON';
+            toggleButton.textContent = 'ON';
           } else {
             toggleButton.classList.remove('on-button');
             toggleButton.classList.add('off-button');
-            toggleButton.textContent = 'Social Media Block is OFF';
+            toggleButton.textContent = 'OFF';
           }
   
           // Send a message to the background script to update the blocking rules

@@ -1,0 +1,29 @@
+[
+    {
+      "id": 1,
+      "priority": 1,
+      "action": {
+        "type": "cancel"
+      },
+      "condition": {
+        "urlFilter": "*://*.instagram.com/*",
+        "resourceTypes": ["main_frame"],
+        "domains": ["instagram.com"],
+        "excludedDomains": ["www.instagram.com"]
+      }
+    },
+    {
+      "id": 2,
+      "priority": 1,
+      "action": {
+        "type": "cancel"
+      },
+      "condition": {
+        "urlFilter": "*://*.facebook.com/*",
+        "resourceTypes": ["main_frame"],
+        "domains": ["facebook.com"],
+        "excludedDomains": ["www.facebook.com"]
+      }
+    }
+  ]
+  

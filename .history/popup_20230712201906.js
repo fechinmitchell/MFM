@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.storage.sync.get('blockerState', function(data) {
       if (data.blockerState === 'on') {
         toggleButton.classList.add('on-button');
-        toggleButton.textContent = 'Social Media Block is ON';
+        toggleButton.textContent = 'ON';
       } else {
         toggleButton.classList.add('off-button');
-        toggleButton.textContent = 'Social Media Block is OFF';
+        toggleButton.textContent = 'OFF';
       }
     });
   
@@ -23,19 +23,26 @@ document.addEventListener('DOMContentLoaded', function () {
           if (newState === 'on') {
             toggleButton.classList.remove('off-button');
             toggleButton.classList.add('on-button');
-            toggleButton.textContent = 'Social Media Block is ON';
+            toggleButton.textContent = 'ON';
           } else {
             toggleButton.classList.remove('on-button');
             toggleButton.classList.add('off-button');
-            toggleButton.textContent = 'Social Media Block is OFF';
+            toggleButton.textContent = 'OFF';
           }
   
-          // Send a message to the background script to update the blocking rules
-          chrome.runtime.sendMessage({toggle: newState}, function(response) {
-            console.log(response.status);
-          });
+          // Update the blocking rules
+          if (newState === 'on') {
+            chrome.declarativeNetRequest.updateDynamicRules({addRules: blockingRules});
+          } else {
+            chrome.declarativeNetRequest.updateDynamicRules({removeRuleIds: [1, 2]});
+          }
         });
       });
     });
   });
+  
+  const blockingRules = [
+    {id: 1, priority: 1, action: {type: 'block'}, condition: {urlFilter: 'facebook.com', resourceTypes: ['main_frame']}},
+    {id: 2, priority: 1, action: {type: 'block'}, condition: {urlFilter: 'instagram.com', resourceTypes: ['main_frame']}}
+  ];
   
