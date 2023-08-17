@@ -1,8 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "Motivation Clinic",
+  "name": "MFM",
   "version": "1.0",
   "permissions": ["declarativeNetRequest", "storage", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "blocked.html",
     "default_icon": {
@@ -10,31 +14,16 @@
       "48": "images/icon48.png",
       "128": "images/icon128.png"
     }
+
   },
   "icons": {
     "16": "images/icon16.png",
     "48": "images/icon48.png",
     "128": "images/icon128.png"
-  },
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "rules1",
-        "path": "rules.json",
-        "enabled": true
-      }
-    ]
-  },
-  "background": {
-    "service_worker": "background.js"
-  },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["contentScript.js"]
-    }
-  ]
+  }
+
 }
+
 
 
 

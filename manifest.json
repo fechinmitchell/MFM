@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "DeepWork",
+  "name": "MFM",
   "version": "1.0",
   "permissions": ["declarativeNetRequest", "storage", "scripting"],
   "host_permissions": ["<all_urls>"],

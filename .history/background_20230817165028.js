@@ -11,6 +11,8 @@ chrome.runtime.onMessage.addListener(
   
   const blockingRules = [
     {id: 1, priority: 1, action: {type: 'block'}, condition: {urlFilter: 'facebook.com', resourceTypes: ['main_frame']}},
-    {id: 2, priority: 1, action: {type: 'block'}, condition: {urlFilter: 'instagram.com', resourceTypes: ['main_frame']}}
+    {id: 2, priority: 1, action: {type: 'block'}, condition: {urlFilter: 'instagram.com', resourceTypes: ['main_frame']}},
+    {id: 3, priority: 1, action: {type: 'block'}, condition: {urlFilter: 'linkedin.com', resourceTypes: ['main_frame']}}
+
   ];
   
